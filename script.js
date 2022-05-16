@@ -1,11 +1,5 @@
 // Operator Buttons
-const operatorButtons = document.querySelectorAll('.operators')
-
-// sum Button
-const sumBtn = document.querySelector('#sum');
-
-// Number Buttons
-const numButtons = document.querySelectorAll('.numbers');
+const buttons = document.querySelectorAll('button')
 
 // display Container
 const displayScreen = document.querySelector('.display-container');
@@ -24,12 +18,45 @@ const multiply = (a, b) => a * b;
 const divide = (a, b) => a / b;
 
 // Global variables to store Numbers
-let storeFirstNumber= [];
-let storeSecondNumber= [];
+let storeFirstNumber= 0;
+let storeSecondNumber= 0;
+
+// store Datatype variable
+let dataType = '';
+
+// Call Operator Fns
+let operatorValue = null;
+const operator = (e) => {
+    operatorValue = e.target.value;
+};
 
 // displayValue Fn
 const displayResult = (e) => {
-    return displayScreen.textContent += e.target.value;
+    const buttonValue = e.target.value;
+    const displayValue = parseInt(displayScreen.textContent);
+    dataType = e.target.dataset.type;
+    console.log(dataType);
+    if (dataType === 'number') {
+        if(displayValue === storeFirstNumber) {
+            displayScreen.textContent = buttonValue;
+        } else {
+            const checkDisplayValue = (displayValue === 0 || null) ? displayScreen.textContent = buttonValue : displayScreen.textContent += buttonValue;
+            return checkDisplayValue;
+        }
+    } else if (dataType === 'operator') {
+        operator(e);
+        storeFirstNumber = displayValue;
+
+    } else if (dataType === 'sum') {
+        storeSecondNumber = displayValue;
+        return displayScreen.textContent = operate(operatorValue, storeFirstNumber, storeSecondNumber);
+
+    } else if (dataType === 'clear') {
+        storeFirstNumber = 0;
+        storeSecondNumber = 0;
+        operatorValue = null;
+        displayScreen.textContent = 0;
+    }
 };
 
 // Operate Fn 
@@ -49,30 +76,11 @@ const operate = (opeartor, num1, num2) => {
     }
 };
 
-// Call Operator Fns
-let operatorValue = null;
-const operator = (e) => {
-    operatorValue = e.target.value;
-    displayScreen.textContent += ` ${operatorValue} `;
-};
 
-// addEventListener to numButtons
-numButtons.forEach(numButton => {
-    numButton.addEventListener('click', displayResult)
-});
-
-// addEventListener to operatorButtons
-operatorButtons.forEach(operButton => {
-    operButton.addEventListener('click', operator);
-});
+// foreach buttons and addEventListener
+buttons.forEach(button => button.addEventListener('click', displayResult));
 
 
-// Sum Fn
-const sum = () => {
-    return displayScreen.textContent = operate(operatorValue, storeFirstNumber, storeSecondNumber);
-}
-
-sumBtn.addEventListener('click', sum);
 
 
 
