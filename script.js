@@ -18,8 +18,8 @@ const multiply = (a, b) => a * b;
 const divide = (a, b) => a / b;
 
 // Global variables to store Numbers
-let storeFirstNumber= 0;
-let storeSecondNumber= 0;
+let storeFirstOperand= 0;
+let storeSecondOperand= 0;
 
 // store Datatype variable
 let dataType = '';
@@ -28,35 +28,6 @@ let dataType = '';
 let operatorValue = null;
 const operator = (e) => {
     operatorValue = e.target.value;
-};
-
-// displayValue Fn
-const displayResult = (e) => {
-    const buttonValue = e.target.value;
-    const displayValue = parseInt(displayScreen.textContent);
-    dataType = e.target.dataset.type;
-    console.log(dataType);
-    if (dataType === 'number') {
-        if(displayValue === storeFirstNumber) {
-            displayScreen.textContent = buttonValue;
-        } else {
-            const checkDisplayValue = (displayValue === 0 || null) ? displayScreen.textContent = buttonValue : displayScreen.textContent += buttonValue;
-            return checkDisplayValue;
-        }
-    } else if (dataType === 'operator') {
-        operator(e);
-        storeFirstNumber = displayValue;
-
-    } else if (dataType === 'sum') {
-        storeSecondNumber = displayValue;
-        return displayScreen.textContent = operate(operatorValue, storeFirstNumber, storeSecondNumber);
-
-    } else if (dataType === 'clear') {
-        storeFirstNumber = 0;
-        storeSecondNumber = 0;
-        operatorValue = null;
-        displayScreen.textContent = 0;
-    }
 };
 
 // Operate Fn 
@@ -73,6 +44,51 @@ const operate = (opeartor, num1, num2) => {
     }
     else if (opeartor === '/') {
         return divide(num1, num2);
+    }
+};
+
+// displayValue Fn
+const displayResult = (e) => {
+    const buttonValue = e.target.value;
+    const displayValue = parseInt(displayScreen.textContent);
+    dataType = e.target.dataset.type;
+
+    switch(dataType) {
+        case 'number':
+            if(displayValue === storeFirstOperand) {
+                displayScreen.textContent = buttonValue;
+            } else {
+                const checkDisplayValue = (displayValue === 0) ? displayScreen.textContent = buttonValue : displayScreen.textContent += buttonValue;
+                checkDisplayValue;
+            }
+            break;
+
+        case 'operator':
+            operator(e);
+            storeFirstOperand = displayValue;
+            break;
+
+        case 'sum':
+            storeSecondOperand = displayValue;
+            displayScreen.textContent = operate(operatorValue, storeFirstOperand, storeSecondOperand);
+            break;
+
+        case 'del':
+            const displayContainer = document.querySelector('.display-container');
+            if (displayContainer.textContent !== 0) {
+                const deleteNumber = displayValue.toString().slice(0, -1);
+                displayScreen.textContent = parseInt(deleteNumber);
+            } else {
+                displayScreen.textContent = 0;
+            }
+            break;
+
+        case 'clear':
+            storeFirstOperand = 0;
+            storeSecondOperand = 0;
+            operatorValue = null;
+            displayScreen.textContent = 0;
+            break;
     }
 };
 

@@ -60,7 +60,7 @@ body {
   justify-content: center;
   align-items: center;
   font-size: 1.4rem;
-  padding: 28px;
+  padding: 28px 20px;
   background-color: rgb(215, 215, 215);
   border: none;
   border-radius: 50%;
@@ -82,7 +82,7 @@ button:hover {
   color: rgb(67, 190, 0);
 }
 
-.numbers,
+.number,
 .grey-signs {
   color: rgb(96, 87, 87);
 }
