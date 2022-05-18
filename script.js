@@ -64,25 +64,23 @@ const resetCalculator = () => {
     document.querySelector('.decimal').disabled = false;
 }
 
-// displayValue Fn
+// value.display Fn
 const displayResult = (e) => {
     const value = {
         button: e.target.value,
         display: parseFloat(displayScreen.textContent),
         dataType: e.target.dataset.type
     };
-    const buttonValue = e.target.value;
-    const displayValue = parseFloat(displayScreen.textContent);
     const {currentKey} = displayScreen.dataset;
-    const dataType = e.target.dataset.type;
 
-    switch(dataType) {
+
+    switch(value.dataType) {
         
         case 'number':
             if (currentKey === 'operator') {
-                displayScreen.textContent = buttonValue;
+                displayScreen.textContent = value.button;
             }
-           else if (buttonValue === '.'){
+           else if (value.button === '.'){
                  document.querySelector('.decimal').disabled = true;
                  displayScreen.textContent += value.button;
             } else {
@@ -94,22 +92,22 @@ const displayResult = (e) => {
 
         case 'operator':
             if (storeFirstOperand !== 0 && currentKey === 'number') {
-                storeSecondOperand = displayValue;
+                storeSecondOperand = value.display;
                 sumValue = operate(operatorValue, storeFirstOperand, storeSecondOperand);
                 displayScreen.textContent = sumValue;
-                operatorValue = buttonValue;
+                operatorValue = value.button;
                 storeFirstOperand = sumValue;
                 storeSecondOperand = 0;
             } else {
                 operator(e);
-                storeFirstOperand = displayValue;
+                storeFirstOperand = value.display;
                 document.querySelector('.decimal').disabled = false;
             }
             displayScreen.dataset.currentKey = 'operator';
             break;
 
         case 'sum':
-            storeSecondOperand = displayValue;
+            storeSecondOperand = value.display;
             sumValue = operate(operatorValue, storeFirstOperand, storeSecondOperand);
             displayScreen.textContent = sumValue;
             storeFirstOperand = 0;
@@ -118,7 +116,7 @@ const displayResult = (e) => {
         case 'del':
             const displayContainer = document.querySelector('.display-container');
             if (displayContainer.textContent.length > 0) {
-                const deleteNumber = displayValue.toString().slice(0, -1);
+                const deleteNumber = value.display.toString().slice(0, -1);
                 displayScreen.textContent = deleteNumber;
             } else {
                 resetCalculator();
