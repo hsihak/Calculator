@@ -37,8 +37,7 @@ body {
   font-size: 1.5rem;
 }
 
-.display-container,
-.pending-container {
+.display-container {
   display: flex;
   justify-content: flex-end;
   align-items: center;

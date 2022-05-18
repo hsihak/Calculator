@@ -32,9 +32,7 @@ let dataType = '';
 
 // Call Operator Fns
 let operatorValue = null;
-const operator = (e) => {
-    operatorValue = e.target.value;
-};
+const operator = (e) => operatorValue = e.target.value;
 
 // Operate Fn 
 // The Function take an Arithmetic Operator and call one of the above Functions
@@ -50,10 +48,20 @@ const operate = (operator, num1, num2) => {
     }
     else if (operator === '/') {
         return divide(num1, num2);
+
     } else if (operator === '%') {
         return remainder(num1, num2);
     }
 };
+
+// resetCalculator Fn
+const resetCalculator = () => {
+    storeFirstOperand = 0;
+    storeSecondOperand = 0;
+    operatorValue = null;
+    displayScreen.textContent = 0;
+    document.querySelector('.decimal').disabled = false;
+}
 
 // displayValue Fn
 const displayResult = (e) => {
@@ -63,18 +71,23 @@ const displayResult = (e) => {
     dataType = e.target.dataset.type;
 
     switch(dataType) {
+        
         case 'number':
-            if(currentKey === 'operator') {
-                displayScreen.textContent = buttonValue;
+            if (currentKey === 'operator') {
+                displayScreen.textContent = buttonValue
+            }
+           else if (buttonValue === '.'){
+                 document.querySelector('.decimal').disabled = true;
+                 displayScreen.textContent += buttonValue;
             } else {
-                const checkDisplayValue = (displayValue === 0) ? displayScreen.textContent = buttonValue : displayScreen.textContent += buttonValue;
+                const checkDisplayValue = (displayScreen.textContent === 0 || displayScreen.textContent === '0') ? displayScreen.textContent = buttonValue : displayScreen.textContent += buttonValue;
                 checkDisplayValue;
             }
             displayScreen.dataset.currentKey = 'number';
             break;
 
         case 'operator':
-            if (storeFirstOperand !== 0 && currentKey === 'number' && sumValue !== null) {
+            if (storeFirstOperand !== 0 && currentKey === 'number') {
                 storeSecondOperand = displayValue;
                 sumValue = operate(operatorValue, storeFirstOperand, storeSecondOperand);
                 displayScreen.textContent = sumValue;
@@ -84,6 +97,7 @@ const displayResult = (e) => {
             } else {
                 operator(e);
                 storeFirstOperand = displayValue;
+                document.querySelector('.decimal').disabled = false;
             }
             displayScreen.dataset.currentKey = 'operator';
             break;
@@ -101,18 +115,12 @@ const displayResult = (e) => {
                 const deleteNumber = displayValue.toString().slice(0, -1);
                 displayScreen.textContent = deleteNumber;
             } else {
-                storeFirstOperand = 0;
-                storeSecondOperand = 0;
-                operatorValue = null;
-                displayScreen.textContent = 0;
+                resetCalculator();
             }
             break;
 
         case 'clear':
-            storeFirstOperand = 0;
-            storeSecondOperand = 0;
-            operatorValue = null;
-            displayScreen.textContent = 0;
+            resetCalculator();
             break;
     }
 };
