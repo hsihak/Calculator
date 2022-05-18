@@ -25,10 +25,10 @@ let storeFirstOperand= 0;
 let storeSecondOperand= 0;
 
 // store Sum
-let sumValue = null;
+let sumValue = 0;
 
 // store Datatype variable
-let dataType = '';
+// let dataType = '';
 
 // Call Operator Fns
 let operatorValue = null;
@@ -59,28 +59,34 @@ const resetCalculator = () => {
     storeFirstOperand = 0;
     storeSecondOperand = 0;
     operatorValue = null;
+    sumValue = 0;
     displayScreen.textContent = 0;
     document.querySelector('.decimal').disabled = false;
 }
 
 // displayValue Fn
 const displayResult = (e) => {
+    const value = {
+        button: e.target.value,
+        display: parseFloat(displayScreen.textContent),
+        dataType: e.target.dataset.type
+    };
     const buttonValue = e.target.value;
     const displayValue = parseFloat(displayScreen.textContent);
     const {currentKey} = displayScreen.dataset;
-    dataType = e.target.dataset.type;
+    const dataType = e.target.dataset.type;
 
     switch(dataType) {
         
         case 'number':
             if (currentKey === 'operator') {
-                displayScreen.textContent = buttonValue
+                displayScreen.textContent = buttonValue;
             }
            else if (buttonValue === '.'){
                  document.querySelector('.decimal').disabled = true;
-                 displayScreen.textContent += buttonValue;
+                 displayScreen.textContent += value.button;
             } else {
-                const checkDisplayValue = (displayScreen.textContent === 0 || displayScreen.textContent === '0') ? displayScreen.textContent = buttonValue : displayScreen.textContent += buttonValue;
+                const checkDisplayValue = (displayScreen.textContent === '0') ? displayScreen.textContent = value.button : displayScreen.textContent += value.button;
                 checkDisplayValue;
             }
             displayScreen.dataset.currentKey = 'number';
@@ -91,7 +97,7 @@ const displayResult = (e) => {
                 storeSecondOperand = displayValue;
                 sumValue = operate(operatorValue, storeFirstOperand, storeSecondOperand);
                 displayScreen.textContent = sumValue;
-                operatorValue = e.target.value;
+                operatorValue = buttonValue;
                 storeFirstOperand = sumValue;
                 storeSecondOperand = 0;
             } else {
@@ -128,6 +134,7 @@ const displayResult = (e) => {
 
 // foreach buttons and addEventListener
 buttons.forEach(button => button.addEventListener('click', displayResult));
+// buttons.forEach(button => button.addEventListener('keydown', (e) => console.log(e.target.value)));
 
 
 
