@@ -130,7 +130,8 @@ const deleteBtn = document.querySelector('#delete');
 
 // Delete Listener
 deleteBtn.addEventListener('click', () => {
-  return currentDisplay.textContent = currentDisplay.textContent.substring(0, currentDisplay.textContent.length - 1);
+  currentDisplay.textContent = currentDisplay.textContent.substring(0, currentDisplay.textContent.length - 1);
+  return secondOperand = currentDisplay.textContent;
 });
 
 // Decimal Button
