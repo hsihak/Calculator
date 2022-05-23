@@ -6,42 +6,47 @@
 
 body {
   font-family: Helvetica;
+  background-image: url(./img/background.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .main-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 95vh;
 }
 
 .sub-container {
   display: grid;
   justify-content: center;
   align-items: center;
-
   background-color: rgb(255, 255, 255);
   border: 1px solid gray;
   border-radius: 1rem;
-}
-
-.display-container {
-  height: 100px;
-  color: rgb(67, 190, 0);
-  font-size: 2.3rem;
-}
-
-.pending-container {
-  height: 60px;
-  color: rgb(171, 171, 171);
-  font-size: 1.5rem;
+  box-shadow: 2px 3px 15px 5px #000000;
 }
 
 .display-container {
   display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 1.2rem;
+  justify-content: center;
+  align-items: flex-end;
+  flex-direction: column;
+  height: 100px;
+  margin: 1.2rem;
+  padding: 0 1rem;
+  color: rgb(67, 190, 0);
+  background-color: aliceblue;
+  border-radius: 20px;
+}
+
+.pending-container {
+  font-size: 1.3rem;
+}
+
+.current-container {
+  font-size: 2.3rem;
 }
 
 .buttons-container {
@@ -50,6 +55,7 @@ body {
   justify-content: space-between;
   align-items: center;
   grid-template-columns: repeat(4, minmax(50px, 1fr));
+  grid-template-rows: 1fr 1fr;
   row-gap: 1rem;
   column-gap: 1rem;
 }
@@ -62,7 +68,7 @@ body {
   padding: 28px 20px;
   background-color: rgb(215, 215, 215);
   border: none;
-  border-radius: 50%;
+  border-radius: 30%;
 }
 
 button {
@@ -84,4 +90,25 @@ button:hover {
 .number,
 .grey-signs {
   color: rgb(96, 87, 87);
+}
+
+.sum {
+  grid-column: span 2;
+}
+
+#power {
+  display: flex;
+  flex-direction: row;
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+#heart {
+  color: blueviolet;
+  font-size: 20px;
 }

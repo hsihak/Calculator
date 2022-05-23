@@ -1,140 +1,148 @@
-// Operator Buttons
-const buttons = document.querySelectorAll('button')
+// Default Global Variables to store Calculator Values
+let firstOperand = '';
+let secondOperand = '';
+let operator = '';
 
-// display Container
-const displayScreen = document.querySelector('.display-container');
+const currentDisplay = document.querySelector('.current-container');
+const previousDisplay = document.querySelector('.pending-container');
 
-// Operator Functions
-// Add Fn
-const add = (a, b) => a + b;
+// Number Buttons
+const numBtns = document.querySelectorAll('.number');
 
-// Subtract Fn
-const subtract = (a, b) => a - b;
-
-// Multiply Fn
-const multiply = (a, b) => a * b;
-
-// Divide Fn
-const divide = (a, b) => a / b;
-
-// Remainder Fn
-const remainder = (a, b) => a % b;
-
-// Global variables to store Numbers
-let storeFirstOperand= 0;
-let storeSecondOperand= 0;
-
-// store Sum
-let sumValue = 0;
-
-// store Datatype variable
-// let dataType = '';
-
-// Call Operator Fns
-let operatorValue = null;
-const operator = (e) => operatorValue = e.target.value;
-
-// Operate Fn 
-// The Function take an Arithmetic Operator and call one of the above Functions
-const operate = (operator, num1, num2) => {
-    if (operator === '+') {
-        return add(num1, num2);
-    }
-    else if (operator === '-') {
-        return subtract(num1, num2);
-    }
-    else if (operator === '*') {
-        return multiply(num1, num2);
-    }
-    else if (operator === '/') {
-        return divide(num1, num2);
-
-    } else if (operator === '%') {
-        return remainder(num1, num2);
-    }
+const handleNumber = num => {
+  // Only allow to input number less 12 numbers long
+  if (currentDisplay.textContent.length < 12) {
+    secondOperand += num;
+    currentDisplay.textContent = secondOperand;
+  }
 };
 
-// resetCalculator Fn
-const resetCalculator = () => {
-    storeFirstOperand = 0;
-    storeSecondOperand = 0;
-    operatorValue = null;
-    sumValue = 0;
-    displayScreen.textContent = 0;
-    document.querySelector('.decimal').disabled = false;
+numBtns.forEach(numBtn => numBtn.addEventListener('click', (e) => handleNumber(e.target.value)));
+
+
+// Operator Buttons
+const operatorBtns = document.querySelectorAll('.operator');
+
+const checkOperator = checker => {
+  operator = checker;
+  previousDisplay.textContent = `${firstOperand} ${operator} `;
+  secondOperand = '';
+  currentDisplay.textContent = '';
+
+};
+
+const handleError = () => {
+  firstOperand = 'Error';
+  previousDisplay.textContent = '';
+  currentDisplay.textContent = firstOperand;
+  operator = '';
+  return;
 }
 
-// value.display Fn
-const displayResult = (e) => {
-    const value = {
-        button: e.target.value,
-        display: parseFloat(displayScreen.textContent),
-        dataType: e.target.dataset.type
-    };
-    const {currentKey} = displayScreen.dataset;
-
-
-    switch(value.dataType) {
-        
-        case 'number':
-            if (currentKey === 'operator') {
-                displayScreen.textContent = value.button;
-            }
-           else if (value.button === '.'){
-                 document.querySelector('.decimal').disabled = true;
-                 displayScreen.textContent += value.button;
-            } else {
-                const checkDisplayValue = (displayScreen.textContent === '0') ? displayScreen.textContent = value.button : displayScreen.textContent += value.button;
-                checkDisplayValue;
-            }
-            displayScreen.dataset.currentKey = 'number';
-            break;
-
-        case 'operator':
-            if (storeFirstOperand !== 0 && currentKey === 'number') {
-                storeSecondOperand = value.display;
-                sumValue = operate(operatorValue, storeFirstOperand, storeSecondOperand);
-                displayScreen.textContent = sumValue;
-                operatorValue = value.button;
-                storeFirstOperand = sumValue;
-                storeSecondOperand = 0;
-            } else {
-                operator(e);
-                storeFirstOperand = value.display;
-                document.querySelector('.decimal').disabled = false;
-            }
-            displayScreen.dataset.currentKey = 'operator';
-            break;
-
-        case 'sum':
-            storeSecondOperand = value.display;
-            sumValue = operate(operatorValue, storeFirstOperand, storeSecondOperand);
-            displayScreen.textContent = sumValue;
-            storeFirstOperand = 0;
-            break;
-
-        case 'del':
-            const displayContainer = document.querySelector('.display-container');
-            if (displayContainer.textContent.length > 0) {
-                const deleteNumber = value.display.toString().slice(0, -1);
-                displayScreen.textContent = deleteNumber;
-            } else {
-                resetCalculator();
-            }
-            break;
-
-        case 'clear':
-            resetCalculator();
-            break;
-    }
+const handleOperator = oper => {
+  if (firstOperand == '') {
+      firstOperand = secondOperand;
+      checkOperator(oper);
+  } else if (secondOperand == '') {
+      checkOperator(oper);
+  } else {
+      operate();
+      operator = oper;
+      currentDisplay.textContent = '0';
+      previousDisplay.textContent = `${firstOperand} ${oper} `;
+  }
+  if (currentDisplay.textContent === '') {
+    currentDisplay.textContent = 0;
+  }
 };
 
-
-// foreach buttons and addEventListener
-buttons.forEach(button => button.addEventListener('click', displayResult));
-// buttons.forEach(button => button.addEventListener('keydown', (e) => console.log(e.target.value)));
+operatorBtns.forEach(operatorBtn => operatorBtn.addEventListener('click', (e) => handleOperator(e.target.value)));
 
 
+// startNew Fn
+const startNew = () => {
+  previousDisplay.textContent = '';
+  operator = '';
+  secondOperand = '';
+}
 
+// Equal Button
+const equalBtn = document.querySelector('.sum');
 
+const operate = () => {
+  // Convert Strings to Numbers
+  firstOperand = parseFloat(firstOperand);
+  secondOperand = parseFloat(secondOperand);
+  //Calculate according to the assigned operator
+  switch (operator){
+    case '+':
+      firstOperand += secondOperand;
+      break;
+      
+    case '-':
+      firstOperand -= secondOperand;
+      break;
+        
+    case '*':
+      firstOperand *= secondOperand;
+      break;
+          
+    case '/':
+      if (secondOperand <= 0) {   
+        handleError();
+        return;
+      }
+      firstOperand /= secondOperand;
+      break;
 
+    case '^':
+      firstOperand = Math.pow(firstOperand, secondOperand);
+      break;
+    }
+    previousDisplay.textContent = '';
+    currentDisplay.textContent = firstOperand;
+    startNew();
+};
+
+// Equal Listener
+        
+equalBtn.addEventListener('click', () => {
+  return (secondOperand != '' && firstOperand != '') ? operate() : '';
+});
+
+// Clear Button
+const clearBtn = document.querySelector('#clear');
+
+// clearCalculator Fn
+const clearCalculator = () => {
+  firstOperand = '';
+  secondOperand = '';
+  operator = '';
+  previousDisplay.textContent = '';
+  currentDisplay.textContent = '0';
+};
+
+// Clear Listener
+clearBtn.addEventListener('click', clearCalculator);
+
+// Delete Button
+const deleteBtn = document.querySelector('#delete');
+
+// Delete Listener
+deleteBtn.addEventListener('click', () => {
+  return currentDisplay.textContent = currentDisplay.textContent.substring(0, currentDisplay.textContent.length - 1);
+});
+
+// Decimal Button
+const decimalBtn = document.querySelector('.decimal');
+
+// decimal Fn
+const checkDecimal = () => {
+  if (secondOperand.includes('.') !== true) {
+      secondOperand += '.';
+      currentDisplay.textContent = secondOperand;
+  }
+};
+
+// decimal Listener
+decimalBtn.addEventListener('click', checkDecimal);
